@@ -2706,6 +2706,7 @@ elem *toElem(Expression e, IRState *irs)
                             eto   = addressElem(eto,   Type.tvoid.arrayOf());
                             efrom = addressElem(efrom, Type.tvoid.arrayOf());
                         }
+
                         elem *ep = el_params(eto, efrom, esize, null);
                         e = el_bin(OPcall, totym(ae.type), el_var(getRtlsym(RTLSYM_ARRAYCOPY)), ep);
                     }

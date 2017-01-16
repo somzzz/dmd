@@ -2364,7 +2364,7 @@ public:
             }
             else if (!(v.isDataseg() || v.storage_class & STCmanifest) && !v.isCTFE() && !istate)
             {
-                error(loc, "variable %s cannot be read at compile time", v.toChars());
+                error(loc, "1 variable %s cannot be read at compile time", v.toChars());
                 return CTFEExp.cantexp;
             }
             else
@@ -2379,7 +2379,7 @@ public:
                 {
                     assert(!(v._init && v._init.isVoidInitializer()));
                     // CTFE initiated from inside a function
-                    error(loc, "variable %s cannot be read at compile time", v.toChars());
+                    error(loc, "2 variable %s cannot be read at compile time", v.toChars());
                     return CTFEExp.cantexp;
                 }
                 if (e.op == TOKvoid)

@@ -12694,8 +12694,9 @@ extern (C++) class AssignExp : BinExp
         {
             printf("AssignExp::semantic('%s')\n", toChars());
         }
-        //printf("e1.op = %d, '%s'\n", e1.op, Token::toChars(e1.op));
-        //printf("e2.op = %d, '%s'\n", e2.op, Token::toChars(e2.op));
+        //printf("e1.op = %d, '%s'\n", e1.op, cast(char*)Token.toString(e1.op));
+        //printf("e2.op = %d, '%s'\n", e2.op, cast(char*)Token.toString(e2.op));
+
         if (type)
             return this;
 
@@ -13597,9 +13598,47 @@ extern (C++) class AssignExp : BinExp
             //  d = a[] + b[], d = (a[] + b[])[0..2], etc
             if (checkNonAssignmentArrayOp(e2, !(memset & MemorySet.blockAssign) && op == TOKassign))
                 return new ErrorExp();
-
             // Remains valid array assignments
             //  d = d[], d = [1,2,3], etc
+            //printf("arrays ops here1 \n");
+ 
+            //if (false){
+            if(true) {
+                printf("e1.op = %d, '%s'\n", e1.op, cast(char*)Token.toString(e1.op));
+                printf("e2.op = %d, '%s'\n", e2.op, cast(char*)Token.toString(e2.op));
+                //e2.semantic(sc);
+                //e1.semantic(sc);
+                Identifier id = Identifier.idPool("_d_arraycopyT");
+                Expression e = new IdentifierExp(loc, Id.empty);
+                e = new DotIdExp(loc, e, Id.object);
+                e = new DotIdExp(loc, e, id);
+                e = e.semantic(sc);
+/*
+                auto tiargs = new Objects();
+                tiargs.push(t2);
+                tiargs.push(t1);
+                auto tempinst = new TemplateInstance(loc, id, tiargs);
+                Expression e;
+                e = new ScopeExp(loc, tempinst);
+    */
+                auto arguments = new Expressions();
+
+                arguments.push(e1);
+                arguments.push(e2);
+
+                //uint size = cast(uint)e1.type.toBasetype().nextOf().size();
+                //arguments.push(new IntegerExp(size));
+
+                e = new CallExp(loc, e, arguments);
+                e.semantic(sc);
+                
+                //e = new AssignExp(loc, e1, e);
+                //e.semantic(sc);
+                //e = new AssignExp(loc, e1, e2);//new CastExp(loc, e, e1.type.toBasetype().ty));
+                //e.semantic(sc);
+                
+                return e;
+            }
         }
 
         /* Don't allow assignment to classes that were allocated on the stack with:
