@@ -15699,7 +15699,9 @@ extern (C++) final class EqualExp : BinExp
             Type telement  = t1.nextOf().toBasetype();
             Type telement2 = t2.nextOf().toBasetype();
 
-            if (telement.ty == Tstruct && telement2.ty == Tstruct)
+            if ((telement.ty == Tstruct && telement2.ty == Tstruct)
+                || (telement.ty == Tclass && telement2.ty == Tclass)
+                || (telement.isfloating() && telement2.isfloating()))
             {
                 Expression __equals = new IdentifierExp(loc, Id.empty);
                 Identifier id = Identifier.idPool("__equals");
