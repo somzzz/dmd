@@ -11922,6 +11922,9 @@ extern (C++) final class ArrayExp : UnaExp
         if (e)
             return e;
 
+        //printf("%s\n", e1.type.toBasetype().toChars());
+        //printf("%s\n", e1.type.toBasetype().nextOf().toBasetype());
+        //printf("%d\n", e1.type.toBasetype().isintegral());
         if (isAggregate(e1.type))
             error("no [] operator overload for type %s", e1.type.toChars());
         else
@@ -15701,7 +15704,9 @@ extern (C++) final class EqualExp : BinExp
 
             if ((telement.ty == Tstruct && telement2.ty == Tstruct)
                 || (telement.ty == Tclass && telement2.ty == Tclass)
-                || (telement.isfloating() && telement2.isfloating()))
+                || (telement.isfloating() && telement2.isfloating())
+                || (telement.isintegral() && telement2.isintegral)
+                || (telement.ty == Tvoid && telement2.ty == Tvoid))
             {
                 Expression __equals = new IdentifierExp(loc, Id.empty);
                 Identifier id = Identifier.idPool("__equals");
