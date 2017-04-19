@@ -15702,11 +15702,12 @@ extern (C++) final class EqualExp : BinExp
             Type telement  = t1.nextOf().toBasetype();
             Type telement2 = t2.nextOf().toBasetype();
 
-            if ((telement.ty == Tstruct && telement2.ty == Tstruct)
+            if ((telement.ty != Tchar && telement.ty != Twchar && telement.ty != Tdchar)
+                && ((telement.ty == Tstruct && telement2.ty == Tstruct)
                 || (telement.ty == Tclass && telement2.ty == Tclass)
                 || (telement.isfloating() && telement2.isfloating())
                 || (telement.isintegral() && telement2.isintegral)
-                || (telement.ty == Tvoid && telement2.ty == Tvoid))
+                || (telement.ty == Tvoid && telement2.ty == Tvoid)))
             {
                 Expression __equals = new IdentifierExp(loc, Id.empty);
                 Identifier id = Identifier.idPool("__equals");
