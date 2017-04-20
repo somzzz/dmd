@@ -47,7 +47,7 @@ alias ctfeNeedRvalue = CtfeGoal.ctfeNeedRvalue;
 alias ctfeNeedLvalue = CtfeGoal.ctfeNeedLvalue;
 alias ctfeNeedNothing = CtfeGoal.ctfeNeedNothing;
 
-//debug = LOG;
+debug = LOG;
 //debug = LOGASSIGN;
 //debug = LOGCOMPILE;
 //debug = SHOWPERFORMANCE;
@@ -4740,6 +4740,7 @@ public:
         {
             printf("%s AndAndExp::interpret() %s\n", e.loc.toChars(), e.toChars());
         }
+
         // Check for an insidePointer expression, evaluate it if so
         interpretFourPointerRelation(e);
         if (result)
@@ -4750,6 +4751,7 @@ public:
             return;
 
         int res;
+        printf("%d %d\n ", result.isBool(false), result.isBool(true));
         if (result.isBool(false))
             res = 0;
         else if (isTrueBool(result))

@@ -24,6 +24,7 @@ import ddmd.root.ctfloat;
 import ddmd.sideeffect;
 import ddmd.tokens;
 import ddmd.visitor;
+import ddmd.identifier;
 
 /*************************************
  * If variable has a const initializer,
@@ -507,7 +508,6 @@ extern (C++) Expression Expression_optimize(Expression e, int result, bool keepL
 
         override void visit(CallExp e)
         {
-            //printf("CallExp::optimize(result = %d) %s\n", result, e.toChars());
             // Optimize parameters with keeping lvalue-ness
             if (expOptimize(e.e1, result))
                 return;
@@ -1040,10 +1040,14 @@ extern (C++) Expression Expression_optimize(Expression e, int result, bool keepL
 
         override void visit(AndAndExp e)
         {
-            //printf("AndAndExp::optimize(%d) %s\n", result, e.toChars());
-            if (expOptimize(e.e1, WANTvalue))
-                return;
-            if (e.e1.isBool(false))
+            printf("AndAndExp::optimize(%d) %s\n", result, e.toChars());
+
+            auto error1 = expOptimize(e.e1, WANTvalue);
+            auto error2 = expOptimize(e.e2, WANTvalue);
+            
+            if (error1 && error2) return;
+
+            if (!error1 && e.e1.isBool(false))
             {
                 // Replace with (e1, false)
                 ret = new IntegerExp(e.loc, 0, Type.tbool);
@@ -1056,9 +1060,8 @@ extern (C++) Expression Expression_optimize(Expression e, int result, bool keepL
                 ret = ret.optimize(result);
                 return;
             }
-            if (expOptimize(e.e2, WANTvalue))
-                return;
-            if (e.e1.isConst())
+
+            if (!error1 && !error2 && e.e1.isConst())
             {
                 if (e.e2.isConst())
                 {

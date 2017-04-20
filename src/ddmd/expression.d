@@ -71,7 +71,7 @@ import ddmd.utf;
 import ddmd.utils;
 import ddmd.visitor;
 
-enum LOGSEMANTIC = false;
+enum LOGSEMANTIC = true;
 void emplaceExp(T : Expression, Args...)(void* p, Args args)
 {
     scope tmp = new T(args);
@@ -15287,11 +15287,15 @@ extern (C++) final class AndAndExp : BinExp
         e1 = e1.toBoolean(sc);
         uint cs1 = sc.callSuper;
 
+        printf("AND AND BOSS\n");
         if (sc.flags & SCOPEcondition)
         {
+                    printf("AND AND BOSS IN IF\n");
             /* If in static if, don't evaluate e2 if we don't have to.
              */
             e1 = e1.optimize(WANTvalue);
+            printf("AND AND BOSS IN IF GATAAAAAAAAAAAAAAA %s\n", e1.toChars());
+            printf("%d\n", e1.isBool(false));
             if (e1.isBool(false))
             {
                 return new IntegerExp(loc, 0, Type.tbool);
@@ -15631,7 +15635,7 @@ extern (C++) final class EqualExp : BinExp
 
     override Expression semantic(Scope* sc)
     {
-        //printf("EqualExp::semantic('%s')\n", toChars());
+        printf("EqualExp::semantic('%s')\n", toChars());
         if (type)
             return this;
 
@@ -15702,8 +15706,8 @@ extern (C++) final class EqualExp : BinExp
             Type telement  = t1.nextOf().toBasetype();
             Type telement2 = t2.nextOf().toBasetype();
 
-            if ((telement.ty != Tchar && telement.ty != Twchar && telement.ty != Tdchar)
-                && ((telement.ty == Tstruct && telement2.ty == Tstruct)
+            if (//(telement.ty != Tchar && telement.ty != Twchar && telement.ty != Tdchar) &&
+                ((telement.ty == Tstruct && telement2.ty == Tstruct)
                 || (telement.ty == Tclass && telement2.ty == Tclass)
                 || (telement.isfloating() && telement2.isfloating())
                 || (telement.isintegral() && telement2.isintegral)
@@ -15724,6 +15728,7 @@ extern (C++) final class EqualExp : BinExp
                     __equals = new NotExp(loc, __equals);
                 }
                 __equals = __equals.semantic(sc);
+
                 return __equals;
             }
         }
