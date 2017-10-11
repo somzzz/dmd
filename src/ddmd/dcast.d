@@ -67,8 +67,8 @@ extern (C++) Expression implicitCastTo(Expression e, Scope* sc, Type t)
         override void visit(Expression e)
         {
             //printf("Expression.implicitCastTo(%s of type %s) => %s\n", e.toChars(), e.type.toChars(), t.toChars());
-
             MATCH match = e.implicitConvTo(t);
+
             if (match)
             {
                 if (match == MATCH.constant && (e.type.constConv(t) || !e.isLvalue() && e.type.equivalent(t)))
@@ -934,6 +934,15 @@ extern (C++) MATCH implicitConvTo(Expression e, Type t)
                 if (implicitMod(earg, targ, mod) == MATCH.nomatch)
                     return;
             }
+
+                // Disallow pointer conversions from shared to unshared
+                // Bug https://issues.dlang.org/show_bug.cgi?id=17769
+                // Caused by default = MATCH.constant for visit(CallExp) and default = MATCH.nomatch for visit(Expression)
+                if (e.type.ty == Tpointer && t.ty == Tpointer &&
+                    e.type.nextOf().isShared() && !t.nextOf().isShared())
+                {
+                    return;
+                }
 
             /* Success
              */
