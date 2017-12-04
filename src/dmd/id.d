@@ -320,6 +320,7 @@ immutable Msgtable[] msgtable =
     { "__equals"},
     { "__switch"},
     { "__switch_error"},
+    { "__dassert_msg", "__dassert_msg"},
 
     // varargs implementation
     { "va_start" },

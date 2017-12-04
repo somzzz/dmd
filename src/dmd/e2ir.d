@@ -1956,7 +1956,7 @@ elem *toElem(Expression e, IRState *irs)
 
         override void visit(AssertExp ae)
         {
-            //printf("AssertExp.toElem() %s\n", toChars());
+            //printf("AssertExp.toElem() %s\n", ae.toChars());
             elem *e;
             if (global.params.useAssert == CHECKENABLE.on)
             {
