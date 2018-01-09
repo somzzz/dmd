@@ -4385,7 +4385,7 @@ private extern (C++) final class ExpressionSemanticVisitor : Visitor
                         sl = new DotIdExp(exp.loc, sl, Id.__dassert_msg);
 
                         Expressions* args = new Expressions();
-                        args.push(cast(StringExp)exp.msg);//new StringExp(exp.loc, (cast(StringExp)exp.msg).string));
+                        args.push(cast(StringExp) exp.msg);
                         args.push(new StringExp(exp.loc, cast(char*) exp.loc.filename));
                         args.push(new IntegerExp(exp.loc.linnum));
 
