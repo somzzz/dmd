@@ -4,7 +4,6 @@ module d_do_test;
 import std.algorithm;
 import std.array;
 import std.conv;
-import std.exception;
 import std.file;
 import std.format;
 import std.process;
@@ -131,6 +130,7 @@ bool findTestParameter(const ref EnvData envData, string file, string token, ref
 
 bool findOutputParameter(string file, string token, out string result, string sep)
 {
+    import std.exception : enforce;
     bool found = false;
 
     while (true)
@@ -340,6 +340,7 @@ string execute(ref File f, string command, bool expectpass, string result_path)
     f.writeln(command);
     f.write(output);
 
+    import std.exception : enforce;
     if (WIFSIGNALED(rc))
     {
         auto value = WTERMSIG(rc);
@@ -366,6 +367,7 @@ string unifyDirSep(string str, string sep)
 {
     return std.regex.replace(str, regex(`(?<=[-\w][-\w]*)/(?=[-\w][-\w/]*\.di?\b)`, "g"), sep);
 }
+
 unittest
 {
     assert(`fail_compilation/test.d(1) Error: dummy error message for 'test'`.unifyDirSep(`\`)
@@ -378,6 +380,7 @@ unittest
     assert(`fail_compilation/diag.d(2): Error: fail_compilation/imports/fail.d must be imported`.unifyDirSep(`\`)
         == `fail_compilation\diag.d(2): Error: fail_compilation\imports\fail.d must be imported`);
 }
+
 
 bool collectExtraSources (in string input_dir, in string output_dir, in string[] extraSources, ref string[] sources, bool msc, in EnvData envData, in string compiler)
 {
@@ -462,6 +465,8 @@ int main(string[] args)
 
 int tryMain(string[] args)
 {
+    import std.exception : enforce;
+
     if (args.length != 4)
     {
         if (args.length == 2 && args[1] == "-unittest")
@@ -641,6 +646,7 @@ int tryMain(string[] args)
             compile_output = compile_output.unifyNewLine();
 
             auto m = std.regex.match(compile_output, `Internal error: .*$`);
+                    
             enforce(!m, m.hit);
 
             if (testArgs.compileOutput !is null)
@@ -695,7 +701,11 @@ int tryMain(string[] args)
                 execute(f, prefix ~ testArgs.postScript ~ " " ~ thisRunName, true, result_path);
             }
 
-            foreach (file; toCleanup) collectException(std.file.remove(file));
+            foreach (file; toCleanup)
+            {   
+                import std.exception : collectException;
+                collectException(std.file.remove(file));
+            }
         }
         catch(Exception e)
         {

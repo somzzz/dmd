@@ -1,7 +1,7 @@
 /*
 TEST_OUTPUT:
 ---
-fail_compilation/fail144.d(13): Error: `"message"`
+../../druntime/import/object.d(4105): Error: Exception thrown during compilation:`object.AssertError("message")`
 fail_compilation/fail144.d(26):        called from here: `bar(7)`
 ---
 */
